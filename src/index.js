@@ -13,16 +13,14 @@ const DEBOUNCE_DELAY = 300;
 
 refs.inputSearch.addEventListener('input', debounce(onSearch, DEBOUNCE_DELAY));
 
-function onSearch(e) {
-  e.preventDefault();
+function onSearch(evt) {
+  evt.preventDefault();
   const countryName = refs.inputSearch.value.trim();
   if (!countryName) {
     refs.countryList.innerHTML = '';
     refs.countryInfo.innerHTML = '';
     return;
   }
-
-  console.log(countryName);
 
   fetchCountries(countryName).then(renderCountries).catch(onError);
 }
@@ -35,24 +33,26 @@ function renderCountries(countries) {
   }
 
   if (countries.length > 2 && countries.length < 10) {
-    const list = countries
+    const markupList = countries
       .map(({ flags, name }) => {
-        return `<li class="country-list__item">
-            <img class = "image" src="${flags.svg}" alt="" width="40" height="40">
-            <h2 class="country-list__title">${name.official}</h2>
+        return `<li class="country-list__item" style="display: flex; margin-bottom: 20px">
+            <img class = "image" src="${flags.svg}" alt="" width="60" height="40" style="margin-right: 20px">
+            <h2 class="country-list__title" style="margin: 0">${name.official}</h2>
             </li>`;
       })
       .join('');
 
-    refs.countryList.innerHTML = list;
+    refs.countryList.setAttribute('style', 'list-style: none; padding-left: 0');
+
+    refs.countryList.innerHTML = markupList;
   }
 
   if (countries.length === 1) {
-    const markup = countries
+    const markupCountry = countries
       .map(({ flags, name, capital, population, languages }) => {
         return `<img  src="${flags.svg}" alt="${
           name.official
-        }" width="30" height="30">
+        }" width="60" height="40">
                  <h2 class = "official">${name.official}</h2>
                  <div class = "discription">
                  <p><span>Capital:</span> ${capital}</p>
@@ -63,7 +63,7 @@ function renderCountries(countries) {
                  </div>`;
       })
       .join('');
-    refs.countryInfo.innerHTML = markup;
+    refs.countryInfo.innerHTML = markupCountry;
   }
 }
 
